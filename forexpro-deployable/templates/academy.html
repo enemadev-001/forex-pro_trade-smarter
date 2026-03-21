@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForexPro Academy - Learn Forex Trading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    /* Academy specific styles */
+    .academy-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #059669 100%);
+      padding: 4rem 2rem;
+      text-align: center;
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    
+    .academy-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    
+    .academy-subtitle {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .credits-display {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 600;
+    }
+    
+    .credits-icon {
+      width: 24px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .course-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .course-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      border-color: var(--primary);
+    }
+    
+    .course-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    
+    .course-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .badge-free {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .badge-premium {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    
+    .course-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    
+    .course-description {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    
+    .course-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    
+    .course-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .course-content {
+      padding: 1.5rem;
+    }
+    
+    .lesson-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .lesson-item {
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      background: var(--background);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border);
+    }
+    
+    .lesson-item:hover {
+      background: var(--surface);
+      border-color: var(--primary);
+    }
+    
+    .lesson-item.free-lesson {
+      background: #000000;
+      border-color: #333333;
+      color: #ffffff;
+    }
+    
+    .lesson-item.free-lesson:hover {
+      background: #1a1a1a;
+      border-color: var(--primary);
+    }
+    
+    .lesson-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .lesson-number {
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .lesson-number.locked {
+      background: var(--border);
+    }
+    
+    .lesson-title {
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .lesson-duration {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .lesson-action {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-lesson {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-start {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-start:hover {
+      background: #059669;
+    }
+    
+    .btn-locked {
+      background: var(--border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+    
+    .btn-buy-credits {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+    
+    .btn-buy-credits:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+    }
+    
+    /* Modal Styles */
+    .price-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .price-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content-academy {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .pricing-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pricing-subtitle {
+      color: var(--text-muted);
+    }
+    
+    .credit-packages {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .credit-package {
+      background: var(--background);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .credit-package:hover {
+      border-color: var(--primary);
+    }
+    
+    .credit-package.selected {
+      border-color: var(--primary);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    
+    .package-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .package-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .package-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .package-description {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    .package-bonus {
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--primary);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    
+    /* Lesson Modal Styles */
+    .lesson-header {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .lesson-content {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      line-height: 1.6;
+      background: var(--surface);
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    
+    .lesson-content h3 {
+      color: var(--text);
+      margin: 1.5rem 0 1rem 0;
+    }
+    
+    .lesson-content p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    
+    .lesson-content ul {
+      margin: 1rem 0;
+      padding-left: 2rem;
+    }
+    
+    .lesson-content li {
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    
+    .lesson-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    /* Crypto Payment Styles */
+    .crypto-payment {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .payment-option {
+      background: var(--background);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .payment-option:hover {
+      border-color: var(--primary);
+    }
+    
+    .payment-option.selected {
+      border-color: var(--primary);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    
+    .crypto-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border-radius: 50%;
+    }
+    
+    .crypto-info {
+      flex: 1;
+    }
+    
+    .crypto-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    
+    .crypto-price {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    .payment-instructions {
+      text-align: center;
+    }
+    
+    .qr-code {
+      margin: 1rem 0;
+    }
+    
+    .address-box {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .address-box input {
+      flex: 1;
+      background: var(--background);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.875rem;
+    }
+    
+    .payment-status {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--background);
+      border-radius: 6px;
+      color: var(--text-muted);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+    
+    .progress-bar-course {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill-course {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+      .academy-hero {
+        padding: 2rem 1rem;
+      }
+      
+      .academy-title {
+        font-size: 1.75rem;
+      }
+      
+      .course-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .modal-content-academy {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- ════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+
+    <!-- Logo -->
+    <a href="{{ url_for('loading') }}" class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <path d="M2 22 Q8 10 16 10 Q24 10 30 22" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <line x1="8"  y1="22" x2="8"  y2="13.5" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="22" x2="16" y2="10"   stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+          <line x1="24" y1="22" x2="24" y2="13.5" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+          <line x1="2"  y1="22" x2="30" y2="22"   stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">ForexPro<span class="logo-dot">.</span></span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="nav-links">
+      <li><button onclick="window.location.href='/'">Home</button></li>
+      <li><button onclick="window.location.href='/dashboard'">Dashboard</button></li>
+      <li><button class="nav-active">Academy</button></li>
+    </ul>
+
+    <!-- Desktop right actions -->
+    <div class="nav-actions">
+      <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">
+        <!-- Sun icon -->
+        <svg class="icon-sun hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <!-- Moon icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}" class="btn-ghost">Dashboard</a>
+        <a href="{{ url_for('logout') }}" class="btn-ghost">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn-ghost">Login</a>
+        <a href="{{ url_for('signup') }}" class="btn-primary">Sign Up Free</a>
+      {% endif %}
+    </div>
+
+    <!-- Mobile: theme + hamburger -->
+    <div class="nav-mobile">
+      <button class="btn-icon" onclick="toggleTheme()">
+        <svg class="icon-sun hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="btn-icon" onclick="toggleMobileMenu()">
+        <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <svg id="icon-close" class="hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu dropdown -->
+  <div id="mobile-menu">
+    <button onclick="window.location.href='/'">Home</button>
+    <button onclick="window.location.href='/dashboard'">Dashboard</button>
+    <button class="nav-active">Academy</button>
+    <div class="mob-divider">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}" class="mob-nav-btn">Dashboard</a>
+        <a href="{{ url_for('logout') }}" class="mob-nav-btn">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="mob-nav-btn">Login</a>
+        <a href="{{ url_for('signup') }}" class="btn-primary">Sign Up Free</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     ACADEMY HERO
+════════════════════════════════════════ -->
+<div class="main-wrap">
+  <div class="main-content">
+    <div class="academy-hero">
+      <h1 class="academy-title">ForexPro Academy</h1>
+      <p class="academy-subtitle">Master forex trading from beginner to advanced with our comprehensive video courses and interactive lessons.</p>
+      <div class="credits-display">
+        <div class="credits-icon">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1.81.45 1.61 1.67 1.61 1.16 0 1.6-.64 1.6-1.46 0-.84-.36-1.3-1.83-1.71-1.78-.51-3.45-1.21-3.45-3.31 0-1.68 1.19-2.85 2.92-3.21V5h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.63-1.63-1.63-1.01 0-1.46.54-1.46 1.26 0 .76.39 1.12 1.83 1.54 1.83.52 3.45 1.25 3.45 3.48 0 1.87-1.35 3.03-3.08 3.4z"/>
+          </svg>
+        </div>
+        <span id="user-credits">0</span> Credits Available
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         COURSE GRID
+    ═══════════════════════════════════════ -->
+    <div class="course-grid">
+      <!-- Course 1: Forex Basics (FREE) -->
+      <div class="course-card">
+        <div class="course-header">
+          <span class="course-badge badge-free">FREE</span>
+          <h3 class="course-title">Forex Basics</h3>
+          <p class="course-description">Learn the fundamentals of forex trading, terminology, and how the market works.</p>
+          <div class="course-meta">
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              5 Lessons
+            </div>
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+              2.5 hours
+            </div>
+          </div>
+        </div>
+        <div class="course-content">
+          <ul class="lesson-list">
+            <li class="lesson-item free-lesson">
+              <div class="lesson-info">
+                <div class="lesson-number">1</div>
+                <div>
+                  <div class="lesson-title">What is Forex Trading?</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-start" onclick="startLesson('forex-basics-1')">Start</button>
+              </div>
+            </li>
+            <li class="lesson-item free-lesson">
+              <div class="lesson-info">
+                <div class="lesson-number">2</div>
+                <div>
+                  <div class="lesson-title">Currency Pairs & Quotes</div>
+                  <div class="lesson-duration">25 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-start" onclick="startLesson('forex-basics-2')">Start</button>
+              </div>
+            </li>
+            <li class="lesson-item free-lesson">
+              <div class="lesson-info">
+                <div class="lesson-number">3</div>
+                <div>
+                  <div class="lesson-title">Market Sessions & Timing</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-start" onclick="startLesson('forex-basics-3')">Start</button>
+              </div>
+            </li>
+            <li class="lesson-item free-lesson">
+              <div class="lesson-info">
+                <div class="lesson-number">4</div>
+                <div>
+                  <div class="lesson-title">Pips, Leverage & Margins</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-start" onclick="startLesson('forex-basics-4')">Start</button>
+              </div>
+            </li>
+            <li class="lesson-item free-lesson">
+              <div class="lesson-info">
+                <div class="lesson-number">5</div>
+                <div>
+                  <div class="lesson-title">Choosing a Broker</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-start" onclick="startLesson('forex-basics-5')">Start</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Course 2: Technical Analysis (PREMIUM) -->
+      <div class="course-card">
+        <div class="course-header">
+          <span class="course-badge badge-premium">PREMIUM</span>
+          <h3 class="course-title">Technical Analysis</h3>
+          <p class="course-description">Master chart patterns, indicators, and technical strategies used by professional traders.</p>
+          <div class="course-meta">
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              8 Lessons
+            </div>
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+              4 hours
+            </div>
+          </div>
+          <div class="progress-bar-course">
+            <div class="progress-fill-course" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="course-content">
+          <ul class="lesson-list">
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Chart Types & Timeframes</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Support & Resistance Levels</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Trend Lines & Channels</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Candlestick Patterns</div>
+                  <div class="lesson-duration">40 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Moving Averages</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">RSI & Stochastics</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Fibonacci Retracement</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Putting It All Together</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Course 3: Risk Management (PREMIUM) -->
+      <div class="course-card">
+        <div class="course-header">
+          <span class="course-badge badge-premium">PREMIUM</span>
+          <h3 class="course-title">Risk Management</h3>
+          <p class="course-description">Learn professional risk management techniques to protect your capital and maximize profits.</p>
+          <div class="course-meta">
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              6 Lessons
+            </div>
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+              3 hours
+            </div>
+          </div>
+          <div class="progress-bar-course">
+            <div class="progress-fill-course" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="course-content">
+          <ul class="lesson-list">
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Position Sizing Fundamentals</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Stop Loss Strategies</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Risk-to-Reward Ratios</div>
+                  <div class="lesson-duration">25 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Drawdown Control</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Portfolio Diversification</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Trading Psychology</div>
+                  <div class="lesson-duration">40 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Course 4: Trading Strategies (PREMIUM) -->
+      <div class="course-card">
+        <div class="course-header">
+          <span class="course-badge badge-premium">PREMIUM</span>
+          <h3 class="course-title">Trading Strategies</h3>
+          <p class="course-description">Proven trading strategies used by professional forex traders around the world.</p>
+          <div class="course-meta">
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              10 Lessons
+            </div>
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+              5 hours
+            </div>
+          </div>
+          <div class="progress-bar-course">
+            <div class="progress-fill-course" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="course-content">
+          <ul class="lesson-list">
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Scalping Strategies</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Day Trading Setups</div>
+                  <div class="lesson-duration">40 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Swing Trading Techniques</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Breakout Trading</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Trend Following Systems</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Range Trading Methods</div>
+                  <div class="lesson-duration">25 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">News Trading Strategies</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Carry Trade Explained</div>
+                  <div class="lesson-duration">25 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Multiple Timeframe Analysis</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Building Your Trading Plan</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Course 5: Advanced Concepts (PREMIUM) -->
+      <div class="course-card">
+        <div class="course-header">
+          <span class="course-badge badge-premium">PREMIUM</span>
+          <h3 class="course-title">Advanced Concepts</h3>
+          <p class="course-description">Advanced topics for experienced traders looking to enhance their skills.</p>
+          <div class="course-meta">
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              7 Lessons
+            </div>
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+              3.5 hours
+            </div>
+          </div>
+          <div class="progress-bar-course">
+            <div class="progress-fill-course" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="course-content">
+          <ul class="lesson-list">
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Economic Calendar Trading</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Central Bank Policies</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Correlation Analysis</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Algorithmic Trading Basics</div>
+                  <div class="lesson-duration">40 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Performance Analysis</div>
+                  <div class="lesson-duration">25 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Tax Considerations</div>
+                  <div class="lesson-duration">20 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Professional Trading Career</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Course 6: Live Trading (PREMIUM) -->
+      <div class="course-card">
+        <div class="course-header">
+          <span class="course-badge badge-premium">PREMIUM</span>
+          <h3 class="course-title">Live Trading Sessions</h3>
+          <p class="course-description">Watch professional traders analyze markets and place trades in real-time.</p>
+          <div class="course-meta">
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              12 Sessions
+            </div>
+            <div class="course-meta-item">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+              6 hours
+            </div>
+          </div>
+          <div class="progress-bar-course">
+            <div class="progress-fill-course" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="course-content">
+          <ul class="lesson-list">
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">London Session Analysis</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">New York Session Breakdown</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Asian Session Opportunities</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Major News Releases</div>
+                  <div class="lesson-duration">35 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Risk Management in Live Trading</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Trade Entry & Exit Points</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-lesson btn-locked" onclick="showPurchaseModal()">Unlock (5 credits)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Managing Losing Trades</div>
+                  <div class="lesson-duration">25 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Scaling In & Out</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Weekend Market Analysis</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Monthly Performance Review</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Q&A with Professional Traders</div>
+                  <div class="lesson-duration">45 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+            <li class="lesson-item locked">
+              <div class="lesson-info">
+                <div class="lesson-number locked">🔒</div>
+                <div>
+                  <div class="lesson-title">Building Consistency</div>
+                  <div class="lesson-duration">30 minutes</div>
+                </div>
+              </div>
+              <div class="lesson-action">
+                <button class="btn-lesson btn-locked" onclick="showCryptoPaymentModal()">Unlock ($6.99)</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     LESSON CONTENT MODAL
+════════════════════════════════════════ -->
+<div class="price-modal" id="lessonModal">
+  <div class="modal-content-academy" style="max-width: 800px;">
+    <div class="lesson-header">
+      <h2 id="lesson-title">Lesson Title</h2>
+      <button class="btn-icon" onclick="closeLessonModal()" style="position: absolute; top: 1rem; right: 1rem;">
+        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="lesson-content" id="lesson-content">
+      <!-- Lesson content will be loaded here -->
+    </div>
+    
+    <div class="lesson-navigation">
+      <button class="btn-ghost" id="prevLesson" onclick="navigateLesson('prev')">Previous Lesson</button>
+      <button class="btn-primary" id="nextLesson" onclick="navigateLesson('next')">Next Lesson</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     CRYPTO PAYMENT MODAL
+════════════════════════════════════════ -->
+<div class="price-modal" id="cryptoPaymentModal">
+  <div class="modal-content-academy">
+    <div class="pricing-header">
+      <h2 class="pricing-title">Unlock Premium Content</h2>
+      <p class="pricing-subtitle">Pay with cryptocurrency - Only $6.99 for full access</p>
+    </div>
+    
+    <div class="crypto-payment">
+      <div class="payment-option" onclick="selectCrypto('bitcoin')">
+        <div class="crypto-icon">
+          <svg width="32" height="32" fill="#F7931A" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+          </svg>
+        </div>
+        <div class="crypto-info">
+          <div class="crypto-name">Bitcoin</div>
+          <div class="crypto-price">0.000102 BTC</div>
+        </div>
+      </div>
+      
+      <div class="payment-option" onclick="selectCrypto('ethereum')">
+        <div class="crypto-icon">
+          <svg width="32" height="32" fill="#627EEA" viewBox="0 0 24 24">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+          </svg>
+        </div>
+        <div class="crypto-info">
+          <div class="crypto-name">Ethereum</div>
+          <div class="crypto-price">0.0035 ETH</div>
+        </div>
+      </div>
+      
+      <div class="payment-option" onclick="selectCrypto('usdt')">
+        <div class="crypto-icon">
+          <svg width="32" height="32" fill="#26A17B" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="white"/>
+            <text x="12" y="16" text-anchor="middle" fill="#26A17B" font-size="10" font-weight="bold">₮</text>
+          </svg>
+        </div>
+        <div class="crypto-info">
+          <div class="crypto-name">USDT</div>
+          <div class="crypto-price">6.99 USDT</div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="paymentDetails" style="display: none;">
+      <div class="payment-instructions">
+        <h3>Payment Instructions</h3>
+        <div class="qr-code" id="qrCode">
+          <!-- QR code will be generated here -->
+          <div style="width: 200px; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin: 1rem auto; border-radius: 8px;">
+            <span style="color: #666;">QR Code</span>
+          </div>
+        </div>
+        <div class="wallet-address">
+          <label>Send payment to:</label>
+          <div class="address-box">
+            <input type="text" id="walletAddress" readonly value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+            <button class="btn-ghost" onclick="copyAddress()">Copy</button>
+          </div>
+        </div>
+        <div class="payment-status">
+          <p id="paymentStatus">Waiting for payment...</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeCryptoPayment()">Cancel</button>
+      <button class="btn-primary" id="payBtn" onclick="processCryptoPayment()">Select Payment Method</button>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+// Academy specific JavaScript
+let userCredits = 0;
+let currentLesson = 0;
+let hasPremiumAccess = false;
+
+// Lesson content database
+const lessonContent = {
+  'forex-basics-1': {
+    title: 'What is Forex Trading?',
+    content: `
+      <h3>Introduction to Forex Trading</h3>
+      <p>Forex (Foreign Exchange) trading is the buying and selling of currencies on the global market. It's the largest financial market in the world, with over $6 trillion traded daily.</p>
+      
+      <h3>How Forex Trading Works</h3>
+      <p>In forex trading, you always trade currencies in pairs. When you buy a currency pair, you're buying the first currency (base currency) and selling the second (quote currency). For example, in EUR/USD, you're buying euros and selling US dollars.</p>
+      
+      <h3>Key Concepts to Understand</h3>
+      <ul>
+        <li><strong>Exchange Rate:</strong> The price of one currency in terms of another</li>
+        <li><strong>Base Currency:</strong> The first currency in a pair (EUR in EUR/USD)</li>
+        <li><strong>Quote Currency:</strong> The second currency in a pair (USD in EUR/USD)</li>
+        <li><strong>Going Long:</strong> Buying a currency pair expecting it to rise in value</li>
+        <li><strong>Going Short:</strong> Selling a currency pair expecting it to fall in value</li>
+      </ul>
+      
+      <h3>Why Trade Forex?</h3>
+      <ul>
+        <li>24-hour market during weekdays</li>
+        <li>High liquidity (easy to buy and sell)</li>
+        <li>Leverage allows trading larger positions with less capital</li>
+        <li>Low transaction costs compared to other markets</li>
+        <li>Ability to profit in both rising and falling markets</li>
+      </ul>
+      
+      <h3>Risks Involved</h3>
+      <p>While forex trading offers opportunities, it also comes with significant risks. The market is volatile, and leverage can amplify both profits and losses. Always trade with money you can afford to lose and consider proper risk management.</p>
+    `
+  },
+  'forex-basics-2': {
+    title: 'Currency Pairs & Quotes',
+    content: `
+      <h3>Understanding Currency Pairs</h3>
+      <p>Currency pairs are the foundation of forex trading. Each pair consists of two currencies and shows how much of the quote currency is needed to purchase one unit of the base currency.</p>
+      
+      <h3>Major Currency Pairs</h3>
+      <p>The most traded currency pairs in the world include:</p>
+      <ul>
+        <li><strong>EUR/USD:</strong> Euro vs US Dollar</li>
+        <li><strong>GBP/USD:</strong> British Pound vs US Dollar</li>
+        <li><strong>USD/JPY:</strong> US Dollar vs Japanese Yen</li>
+        <li><strong>USD/CHF:</strong> US Dollar vs Swiss Franc</li>
+        <li><strong>AUD/USD:</strong> Australian Dollar vs US Dollar</li>
+        <li><strong>USD/CAD:</strong> US Dollar vs Canadian Dollar</li>
+        <li><strong>NZD/USD:</strong> New Zealand Dollar vs US Dollar</li>
+      </ul>
+      
+      <h3>Reading Forex Quotes</h3>
+      <p>A forex quote consists of two prices:</p>
+      <ul>
+        <li><strong>Bid Price:</strong> The price at which you can sell the base currency</li>
+        <li><strong>Ask Price:</strong> The price at which you can buy the base currency</li>
+      </ul>
+      <p>The difference between bid and ask is called the <strong>spread</strong>.</p>
+      
+      <h3>Cross Pairs and Exotics</h3>
+      <ul>
+        <li><strong>Cross Pairs:</strong> Don't include the USD (EUR/GBP, EUR/JPY)</li>
+        <li><strong>Exotic Pairs:</strong> Include one major currency and one from an emerging economy (USD/TRY, EUR/ZAR)</li>
+      </ul>
+      
+      <h3>Price Movements</h3>
+      <p>Currency prices fluctuate based on supply and demand, economic factors, interest rates, political stability, and market sentiment. Understanding these factors is crucial for successful trading.</p>
+    `
+  },
+  'forex-basics-3': {
+    title: 'Market Sessions & Timing',
+    content: `
+      <h3>The Four Major Forex Sessions</h3>
+      <p>The forex market operates 24 hours a day, 5 days a week, divided into four major trading sessions:</p>
+      
+      <h3>1. Sydney Session</h3>
+      <ul>
+        <li><strong>Time:</strong> 10:00 PM - 7:00 AM GMT</li>
+        <li><strong>Major Pairs:</strong> AUD/USD, NZD/USD</li>
+        <li><strong>Characteristics:</strong> Lower volatility, good for Asian market exposure</li>
+      </ul>
+      
+      <h3>2. Tokyo Session</h3>
+      <ul>
+        <li><strong>Time:</strong> 11:00 PM - 8:00 AM GMT</li>
+        <li><strong>Major Pairs:</strong> USD/JPY, EUR/JPY, AUD/JPY</li>
+        <li><strong>Characteristics:</strong> High liquidity during Asian trading hours</li>
+      </ul>
+      
+      <h3>3. London Session</h3>
+      <ul>
+        <li><strong>Time:</strong> 8:00 AM - 4:00 PM GMT</li>
+        <li><strong>Major Pairs:</strong> EUR/USD, GBP/USD, EUR/GBP</li>
+        <li><strong>Characteristics:</strong> Highest trading volume, most volatile session</li>
+      </ul>
+      
+      <h3>4. New York Session</h3>
+      <ul>
+        <li><strong>Time:</strong> 1:00 PM - 10:00 PM GMT</li>
+        <li><strong>Major Pairs:</strong> USD/CAD, USD/CHF, major pairs</li>
+        <li><strong>Characteristics:</strong> High liquidity, overlaps with London session</li>
+      </ul>
+      
+      <h3>Best Times to Trade</h3>
+      <p>The most active trading periods occur when sessions overlap:</p>
+      <ul>
+        <li><strong>London/New York Overlap:</strong> 1:00 PM - 4:00 PM GMT (highest volatility)</li>
+        <li><strong>Sydney/Tokyo Overlap:</strong> 11:00 PM - 1:00 AM GMT</li>
+        <li><strong>Tokyo/London Overlap:</strong> 8:00 AM - 9:00 AM GMT</li>
+      </ul>
+      
+      <h3>Weekend Gaps</h3>
+      <p>The forex market closes Friday evening and reopens Sunday evening. Price gaps can occur between sessions due to weekend news or events.</p>
+    `
+  },
+  'forex-basics-4': {
+    title: 'Pips, Leverage & Margins',
+    content: `
+      <h3>Understanding Pips</h3>
+      <p>A pip (Percentage in Point) is the smallest price movement in forex trading. For most currency pairs, a pip is the fourth decimal place (0.0001). For pairs with JPY, it's the second decimal place (0.01).</p>
+      
+      <h3>Pip Value Calculation</h3>
+      <p>The value of a pip depends on your trade size:</p>
+      <ul>
+        <li>Standard lot (100,000 units): $10 per pip</li>
+        <li>Mini lot (10,000 units): $1 per pip</li>
+        <li>Micro lot (1,000 units): $0.10 per pip</li>
+      </ul>
+      
+      <h3>Leverage Explained</h3>
+      <p>Leverage allows you to control a large position with a small amount of capital. Common leverage ratios include:</p>
+      <ul>
+        <li><strong>50:1:</strong> Control $50,000 with $1,000</li>
+        <li><strong>100:1:</strong> Control $100,000 with $1,000</li>
+        <li><strong>500:1:</strong> Control $500,000 with $1,000</li>
+      </ul>
+      
+      <h3>Margin Requirements</h3>
+      <p>Margin is the collateral required to open and maintain positions:</p>
+      <ul>
+        <li><strong>Initial Margin:</strong> Required to open a position</li>
+        <li><strong>Maintenance Margin:</strong> Required to keep the position open</li>
+        <li><strong>Margin Call:</strong> When your account equity falls below maintenance margin</li>
+      </ul>
+      
+      <h3>Risk Management with Leverage</h3>
+      <p>While leverage can amplify profits, it also increases risk. Always consider:</p>
+      <ul>
+        <li>Use appropriate position sizing</li>
+        <li>Set stop-loss orders</li>
+        <li>Don't over-leverage your account</li>
+        <li>Understand margin requirements clearly</li>
+      </ul>
+      
+      <h3>Practical Example</h3>
+      <p>If you buy 1 mini lot of EUR/USD at 1.1000 and it moves to 1.1100, that's a 100-pip gain worth $100 (100 pips × $1 per pip). With 100:1 leverage, you only needed $100 margin to control this $10,000 position.</p>
+    `
+  },
+  'forex-basics-5': {
+    title: 'Choosing a Broker',
+    content: `
+      <h3>What to Look for in a Forex Broker</h3>
+      <p>Choosing the right broker is crucial for your trading success. Here are the key factors to consider:</p>
+      
+      <h3>Regulation and Safety</h3>
+      <ul>
+        <li><strong>Regulatory Compliance:</strong> Look for brokers regulated by FCA, CySEC, ASIC, or NFA/CFTC</li>
+        <li><strong>Segregated Funds:</strong> Client funds should be kept separate from company funds</li>
+        <li><strong>Insurance:</strong> Some jurisdictions offer deposit insurance</li>
+      </ul>
+      
+      <h3>Trading Conditions</h3>
+      <ul>
+        <li><strong>Spreads:</strong> Fixed vs variable spreads, compare average spreads</li>
+        <li><strong>Commissions:</strong> Some brokers charge commissions instead of wider spreads</li>
+        <li><strong>Leverage:</strong> Available leverage ratios (consider your risk tolerance)</li>
+        <li><strong>Minimum Deposit:</strong> Account requirements that fit your budget</li>
+      </ul>
+      
+      <h3>Trading Platforms</h3>
+      <ul>
+        <li><strong>MetaTrader 4 (MT4):</strong> Most popular, extensive indicators and EAs</li>
+        <li><strong>MetaTrader 5 (MT5):</strong> Newer version with more features</li>
+        <li><strong>cTrader:</strong> User-friendly with advanced features</li>
+        <li><strong>Proprietary Platforms:</strong> Broker-specific platforms</li>
+      </ul>
+      
+      <h3>Account Types</h3>
+      <ul>
+        <li><strong>Standard Accounts:</strong> Traditional spread-based pricing</li>
+        <li><strong>ECN Accounts:</strong> Direct market access with commissions</li>
+        <li><strong>STP Accounts:</strong> Straight-through processing</li>
+        <li><strong>Islamic Accounts:</strong> Swap-free for religious reasons</li>
+      </ul>
+      
+      <h3>Customer Support</h3>
+      <ul>
+        <li>24/7 availability during trading hours</li>
+        <li>Multiple contact methods (phone, email, live chat)</li>
+        <li>Response time and quality of support</li>
+        <li>Language options</li>
+      </ul>
+      
+      <h3>Red Flags to Avoid</h3>
+      <ul>
+        <li>Promises of guaranteed profits</li>
+        <li>Unrealistic bonus conditions</li>
+        <li>Poor customer reviews</li>
+        <li>Lack of clear regulation</li>
+        <li>Hidden fees or unclear terms</li>
+      </ul>
+    `
+  }
+};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  loadUserCredits();
+});
+
+function loadUserCredits() {
+  // Check if user has premium access
+  hasPremiumAccess = localStorage.getItem('hasPremiumAccess') === 'true';
+  updateCreditsDisplay();
+}
+
+function updateCreditsDisplay() {
+  document.getElementById('user-credits').textContent = hasPremiumAccess ? 'Unlimited' : '0';
+}
+
+function startLesson(lessonId) {
+  currentLesson = lessonId;
+  const lesson = lessonContent[lessonId];
+  
+  if (lesson) {
+    // Free lessons - directly open
+    openLessonModal(lesson);
+  } else {
+    // Premium lessons - show coming soon message
+    alert('Premium content coming soon! The free course provides comprehensive forex education to get you started.');
+  }
+}
+
+function openLessonModal(lesson) {
+  document.getElementById('lesson-title').textContent = lesson.title;
+  document.getElementById('lesson-content').innerHTML = lesson.content;
+  document.getElementById('lessonModal').classList.add('show');
+}
+
+function closeLessonModal() {
+  document.getElementById('lessonModal').classList.remove('show');
+}
+
+function navigateLesson(direction) {
+  // Simple navigation logic
+  const lessons = Object.keys(lessonContent);
+  const currentIndex = lessons.indexOf(currentLesson);
+  
+  if (direction === 'prev' && currentIndex > 0) {
+    currentLesson = lessons[currentIndex - 1];
+  } else if (direction === 'next' && currentIndex < lessons.length - 1) {
+    currentLesson = lessons[currentIndex + 1];
+  }
+  
+  if (lessonContent[currentLesson]) {
+    openLessonModal(lessonContent[currentLesson]);
+  }
+}
+
+
+// Close modal when clicking outside
+document.getElementById('lessonModal').addEventListener('click', (e) => {
+  if (e.target.id === 'lessonModal') {
+    closeLessonModal();
+  }
+});
+
+// Theme toggle (reuse from main script)
+function toggleTheme() {
+  const current = localStorage.getItem('fpTheme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+function applyTheme(theme) {
+  const html = document.documentElement;
+  if (theme === 'light') {
+    html.classList.add('light');
+    html.classList.remove('dark');
+  } else {
+    html.classList.remove('light');
+    html.classList.add('dark');
+  }
+  localStorage.setItem('fpTheme', theme);
+}
+
+// Mobile menu
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('icon-menu');
+  const iconClose = document.getElementById('icon-close');
+  if (!menu) return;
+  menu.classList.toggle('open');
+  if (iconOpen) iconOpen.classList.toggle('hidden');
+  if (iconClose) iconClose.classList.toggle('hidden');
+}
+</script>
+</body>
+</html>

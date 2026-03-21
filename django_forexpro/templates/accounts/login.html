@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - ForexPro</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0f172a; color: white; margin: 0; padding: 20px; }
+        .container { max-width: 400px; margin: 50px auto; background: #1e293b; padding: 30px; border-radius: 10px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; background: #334155; border: 1px solid #475569; color: white; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #059669; }
+        .messages { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .error { background: #dc2626; }
+        .success { background: #16a34a; }
+        .info { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ForexPro Login</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username or Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 20px;">
+            Don't have an account? <a href="{% url 'signup' %}" style="color: #10b981;">Sign up</a>
+        </p>
+    </div>
+</body>
+</html>

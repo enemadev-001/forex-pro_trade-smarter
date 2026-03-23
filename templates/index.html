@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForexPro — Trade Smarter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+
+    <!-- Logo -->
+    <a href="{{ url_for('loading') }}" class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <path d="M2 22 Q8 10 16 10 Q24 10 30 22" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <line x1="8"  y1="22" x2="8"  y2="13.5" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="22" x2="16" y2="10"   stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+          <line x1="24" y1="22" x2="24" y2="13.5" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+          <line x1="2"  y1="22" x2="30" y2="22"   stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">ForexPro<span class="logo-dot">.</span></span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="nav-links">
+      <li><button onclick="scrollToSection('trading-plan')">My Trading Plan</button></li>
+      <li><button onclick="scrollToSection('education-hub')">Education Hub</button></li>
+      <li><button onclick="scrollToSection('price-monitor')">Price Monitor</button></li>
+      <li><button onclick="scrollToSection('live-chart')">Live Chart</button></li>
+      <li><a href="{{ url_for('academy') }}" class="nav-link">Academy</a></li>
+    </ul>
+
+    <!-- Desktop right actions -->
+    <div class="nav-actions">
+      <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">
+        <!-- Sun icon -->
+        <svg class="icon-sun hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <!-- Moon icon -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a href="{{ url_for('login') }}" class="btn-ghost">Login</a>
+      <a href="{{ url_for('signup') }}" class="btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <polyline points="16 7 22 7 22 13"/>
+        </svg>
+        Sign Up Free
+      </a>
+    </div>
+
+    <!-- Mobile: theme + hamburger -->
+    <div class="nav-mobile">
+      <button class="btn-icon" onclick="toggleTheme()">
+        <svg class="icon-sun hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="btn-icon" onclick="toggleMobileMenu()">
+        <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <svg id="icon-close" class="hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu dropdown -->
+  <div id="mobile-menu">
+    <button onclick="scrollToSection('trading-plan')">My Trading Plan</button>
+    <button onclick="scrollToSection('education-hub')">Education Hub</button>
+    <button onclick="scrollToSection('price-monitor')">Price Monitor</button>
+    <button onclick="scrollToSection('live-chart')">Live Chart</button>
+    <a href="{{ url_for('academy') }}" class="mob-nav-btn">Academy</a>
+    <div class="mob-divider">
+      <a href="{{ url_for('login') }}" class="mob-nav-btn">Login</a>
+      <a href="{{ url_for('signup') }}" class="btn-primary">Sign Up Free</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-inner">
+
+    <!-- Left: headline -->
+    <div>
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        LIVE TRADING SUITE
+      </div>
+      <h1 class="hero-title">
+        Trade Smarter.<br>
+        <span class="accent">Risk Less.</span> Win More.
+      </h1>
+      <p class="hero-desc">
+        ForexPro gives you real-time market data, a professional position-size calculator,
+        and bite-sized education — everything a modern trader needs in one clean dashboard.
+      </p>
+    </div>
+
+    <!-- Right: feature badges -->
+    <div class="hero-badges">
+      <div class="feature-badge">
+        <div class="badge-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2" width="18" height="18">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+        </div>
+        <div>
+          <div class="badge-label">Live Prices</div>
+          <div class="badge-sub">5 pairs tracked</div>
+        </div>
+      </div>
+      <div class="feature-badge">
+        <div class="badge-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2" width="18" height="18">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="badge-label">Risk Tools</div>
+          <div class="badge-sub">Position calculator</div>
+        </div>
+      </div>
+      <div class="feature-badge">
+        <div class="badge-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2" width="18" height="18">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="badge-label">Education</div>
+          <div class="badge-sub">3 core lessons</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════ -->
+<main class="main-wrap">
+
+  <!-- ── LEFT SIDEBAR: TRADING PLAN ── -->
+  <aside id="trading-plan" class="sidebar">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2" width="20" height="20">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+            <span class="card-title">Trading Plan</span>
+          </div>
+          <p class="card-sub">Calculate your precise position size and risk before entering a trade.</p>
+        </div>
+      </div>
+
+      <div class="card-body" style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Account Balance -->
+        <div class="form-group">
+          <label class="form-label">Account Balance ($)</label>
+          <div class="input-wrap">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            <input type="number" id="balance" value="10000" min="0" class="form-input" placeholder="10000" />
+          </div>
+        </div>
+
+        <!-- Risk + Stop Loss -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Risk per Trade (%)</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <line x1="19" y1="5" x2="5" y2="19"/>
+                <circle cx="6.5" cy="6.5" r="2.5"/>
+                <circle cx="17.5" cy="17.5" r="2.5"/>
+              </svg>
+              <input type="number" id="risk-percent" value="1.5" min="0.1" max="10" step="0.1" class="form-input" placeholder="1.5" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stop Loss (Pips)</label>
+            <div class="input-wrap">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <input type="number" id="stop-loss" value="20" min="1" class="form-input" placeholder="20" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Goal -->
+        <div class="form-group">
+          <label class="form-label">Daily Profit Goal ($)</label>
+          <div class="input-wrap">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+              <polyline points="16 7 22 7 22 13"/>
+            </svg>
+            <input type="number" id="daily-goal" value="500" min="0" class="form-input" placeholder="500" />
+          </div>
+        </div>
+
+        <!-- Calculate -->
+        <button class="calc-btn" onclick="calculatePosition()">Calculate Position</button>
+
+        <!-- Results -->
+        <div id="position-summary" class="results-card hidden">
+          <div class="results-title">Position Summary</div>
+          <div class="results-main">
+            <span style="font-size:.875rem;color:var(--text-muted);">Position Size</span>
+            <div>
+              <span id="result-lots" class="results-big">0.00</span>
+              <span class="results-unit">Lots</span>
+            </div>
+          </div>
+          <hr class="results-divider" />
+          <div class="results-row">
+            <span class="label">Max Risk Amount</span>
+            <span id="result-risk" class="value val-red">$0.00</span>
+          </div>
+          <div class="results-row">
+            <span class="label">Required R-Multiple</span>
+            <span id="result-rmultiple" class="value val-white">0.0R</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+
+  <!-- ── CENTER CONTENT ── -->
+  <div class="main-content" style="display:flex;flex-direction:column;gap:2rem;">
+
+    <!-- PRICE MONITOR -->
+    <section id="price-monitor">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Live Markets</span>
+          <div class="live-badge">
+            <span class="live-dot"></span>
+            LIVE
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pair</th>
+                <th>Bid</th>
+                <th>Ask</th>
+                <th class="col-spread">Spread</th>
+                <th>Change</th>
+                <th>Trend</th>
+              </tr>
+            </thead>
+            <tbody id="price-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE CHART -->
+    <section id="live-chart">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Live Chart</span>
+          <div class="chart-controls">
+            <select id="chart-pair" class="chart-select">
+              <option value="EUR/USD">EUR/USD</option>
+              <option value="GBP/USD">GBP/USD</option>
+              <option value="USD/JPY">USD/JPY</option>
+              <option value="USD/CHF">USD/CHF</option>
+              <option value="AUD/USD">AUD/USD</option>
+            </select>
+            <select id="chart-timeframe" class="chart-select">
+              <option value="1m">1 Minute</option>
+              <option value="5m">5 Minutes</option>
+              <option value="15m">15 Minutes</option>
+              <option value="1h" selected>1 Hour</option>
+              <option value="4h">4 Hours</option>
+              <option value="1d">1 Day</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-loading" id="chart-loading">
+            <div class="loading-spinner"></div>
+            <span>Loading chart data...</span>
+          </div>
+          <div class="chart-wrapper" id="chart-wrapper" style="display: none;">
+            <canvas id="forex-chart" width="800" height="400"></canvas>
+          </div>
+          <div class="chart-info">
+            <div class="chart-stats">
+              <div class="stat-item">
+                <span class="stat-label">Current Price</span>
+                <span class="stat-value" id="current-price">--</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">24h Change</span>
+                <span class="stat-value" id="price-change">--</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">24h Volume</span>
+                <span class="stat-value" id="volume">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">About ForexPro</div>
+            <div class="card-sub">Why we built this — and who it's for</div>
+          </div>
+        </div>
+        <div class="about-grid">
+          <div>
+            <div class="about-section-title">Our Mission</div>
+            <p class="about-text">Most retail traders fail not because of bad strategies, but because of poor risk discipline and a lack of structured tools. ForexPro was built to change that — giving independent traders a professional-grade workspace without the complexity or cost.</p>
+          </div>
+          <div>
+            <div class="about-section-title">What You Get</div>
+            <ul class="about-list">
+              <li><span class="dot"></span>Live-simulated price feed for 5 major pairs</li>
+              <li><span class="dot"></span>Precision position size &amp; risk calculator</li>
+              <li><span class="dot"></span>Structured beginner education modules</li>
+              <li><span class="dot"></span>Dark &amp; light mode for any environment</li>
+              <li><span class="dot"></span>Fully responsive for desktop and mobile</li>
+            </ul>
+          </div>
+          <div>
+            <div class="about-section-title">Who It's For</div>
+            <p class="about-text">Whether you're a complete beginner or an intermediate trader refining your risk rules, ForexPro is designed as your daily companion — structured enough to keep you disciplined, simple enough to stay out of your way.</p>
+            <div class="quote-box">"Consistency beats prediction. Manage your risk and the profits follow."</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION HUB -->
+    <section id="education-hub">
+      <div class="edu-heading">
+        <h2>Beginner Education Hub</h2>
+        <span>Master the basics</span>
+      </div>
+      <div class="edu-grid">
+
+        <!-- Card 1 -->
+        <button class="edu-card" onclick="openModal('modal-market-structure')">
+          <div class="edu-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#60a5fa" stroke-width="2" width="28" height="28">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <div class="edu-title">Market Structure</div>
+          <p class="edu-desc">Learn how to read the market's natural rhythm and trend direction.</p>
+          <span class="edu-cta">Read Lesson →</span>
+        </button>
+
+        <!-- Card 2 -->
+        <button class="edu-card" onclick="openModal('modal-candlesticks')">
+          <div class="edu-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#fbbf24" stroke-width="2" width="28" height="28">
+              <rect x="9" y="3" width="6" height="8" rx="1"/>
+              <rect x="9" y="13" width="6" height="8" rx="1"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="11" x2="12" y2="13"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+            </svg>
+          </div>
+          <div class="edu-title">Candlestick Patterns</div>
+          <p class="edu-desc">Decode the psychology behind price action using candlestick formations.</p>
+          <span class="edu-cta">Read Lesson →</span>
+        </button>
+
+        <!-- Card 3 -->
+        <button class="edu-card" onclick="openModal('modal-risk-management')">
+          <div class="edu-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2" width="28" height="28">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <div class="edu-title">Risk Management</div>
+          <p class="edu-desc">The most crucial skill for survival and long-term profitability.</p>
+          <span class="edu-cta">Read Lesson →</span>
+        </button>
+
+      </div>
+    </section>
+
+  </div><!-- /main-content -->
+</main>
+
+
+<!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 ForexPro. Built for independent traders.</span>
+    <span class="footer-accent">All prices are simulated for educational purposes.</span>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════
+     MODAL BACKDROP
+════════════════════════════════════════ -->
+<div id="modal-backdrop" class="modal-backdrop" onclick="closeAllModals()"></div>
+
+
+<!-- ── Modal: Market Structure ── -->
+<div id="modal-market-structure" class="modal-box">
+  <div class="modal-panel" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">Market Structure</span>
+      <button class="modal-close" onclick="closeAllModals()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p><strong style="color:var(--text);">Market Structure</strong> is the basic framework of how price moves — the most fundamental concept in technical analysis. Markets rarely move in a straight line; instead, they move in a series of zig-zags forming waves.</p>
+      <p><strong style="color:#34d399;">Uptrends</strong> are characterized by a series of <em style="color:var(--text);">Higher Highs (HH)</em> and <em style="color:var(--text);">Higher Lows (HL)</em>. This indicates that buyers are in control and are willing to pay higher prices.</p>
+      <p><strong style="color:#f87171;">Downtrends</strong> consist of <em style="color:var(--text);">Lower Lows (LL)</em> and <em style="color:var(--text);">Lower Highs (LH)</em>. Here, sellers dominate, pushing prices further down.</p>
+      <p>A market is in <strong style="color:var(--text);">consolidation</strong> (ranging) when there are no clear HH/HL or LL/LH sequences — price bounces between defined support and resistance levels. Avoid trading ranges until a clear breakout occurs.</p>
+      <div class="modal-callout">
+        <strong style="display:block;color:var(--text);margin-bottom:4px;">Key Takeaway</strong>
+        Never trade against the prevailing higher-timeframe market structure. "The trend is your friend until it bends."
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Candlestick Patterns ── -->
+<div id="modal-candlesticks" class="modal-box">
+  <div class="modal-panel" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">Candlestick Patterns</span>
+      <button class="modal-close" onclick="closeAllModals()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Japanese candlesticks provide a visual representation of price action during a specific timeframe. Every candle tells a story about the battle between buyers (bulls) and sellers (bears).</p>
+      <div class="modal-card-grid">
+        <div class="modal-card">
+          <strong style="color:var(--text);">The Doji</strong>
+          <p>A Doji occurs when open and close prices are virtually identical. It represents market indecision and a potential turning point if found at major support/resistance levels.</p>
+        </div>
+        <div class="modal-card">
+          <strong style="color:var(--text);">Hammer &amp; Shooting Star</strong>
+          <p>Characterized by a small body and a long lower (hammer) or upper (shooting star) wick. They show a strong rejection of price levels, hinting at a reversal.</p>
+        </div>
+        <div class="modal-card" style="grid-column:1/-1;">
+          <strong style="color:var(--text);">Engulfing Pattern</strong>
+          <p>A two-candle pattern where the second candle's real body completely 'engulfs' the previous one. A bullish engulfing at a support zone is a powerful buy signal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Risk Management ── -->
+<div id="modal-risk-management" class="modal-box">
+  <div class="modal-panel" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">Risk Management</span>
+      <button class="modal-close" onclick="closeAllModals()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>You can have the best trading strategy in the world, but without proper risk management, you will eventually blow your account. Your primary job as a trader is <strong style="color:var(--text);">capital preservation</strong>.</p>
+      <div class="modal-card-grid">
+        <div class="modal-card">
+          <strong style="color:var(--primary);">The 1-2% Rule</strong>
+          <p>Never risk more than 1%–2% of your total account equity on a single trade. With a $10,000 account, your max risk should be $100–$200.</p>
+        </div>
+        <div class="modal-card">
+          <strong style="color:var(--primary);">Risk:Reward Ratio</strong>
+          <p>Always aim for trades where the potential reward outweighs the risk. A standard minimum is 1:2 R:R. You only need to win 34% of trades to break even.</p>
+        </div>
+        <div class="modal-card">
+          <strong style="color:var(--primary);">Position Sizing</strong>
+          <p>Your lot size should be calculated mathematically before every trade. Use the Trading Plan Tool on this dashboard to determine your exact position size.</p>
+        </div>
+        <div class="modal-card">
+          <strong style="color:var(--primary);">Drawdown Management</strong>
+          <p>Set a daily loss limit (e.g., 3%) and a weekly loss limit (e.g., 6%). If you hit these limits, stop trading for that period.</p>
+        </div>
+      </div>
+      <div class="modal-note">Use the Trading Plan Tool on the left to mathematically calculate your exact lot size before every execution.</div>
+    </div>
+  </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

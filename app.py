@@ -178,5 +178,22 @@ def get_database_info():
     })
 
 if __name__ == "__main__":
-    print("Starting Flask app on http://127.0.0.1:5000")
+    import socket
+    
+    # Get local IP address for network access
+    def get_local_ip():
+        try:
+            # Connect to an external host to get local IP
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+            s.close()
+            return ip
+        except:
+            return "127.0.0.1"
+    
+    local_ip = get_local_ip()
+    print(f"Starting Flask app on http://{local_ip}:5000")
+    print(f"Access from other devices using: http://{local_ip}:5000")
+    print(f"Local access: http://127.0.0.1:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)

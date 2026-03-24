@@ -14,6 +14,9 @@ app.config["DATABASE"] = "/tmp/forexpro.sqlite"
 # Initialize bcrypt
 bcrypt = Bcrypt(app)
 
+# Initialize database immediately when app starts
+init_db(app.config["DATABASE"])
+
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 

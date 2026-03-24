@@ -1,13 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_bcrypt import Bcrypt
 from models import init_db, get_user_by_email, get_user_by_id, create_user, verify_password, User, get_db_connection, get_all_users, delete_user, toggle_admin_status
 import re
 import datetime
 import time
+import os
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["SECRET_KEY"] = "replace-with-secure-random-value"
-app.config["DATABASE"] = "instance/forexpro.sqlite"
+app.config["DATABASE"] = "/tmp/forexpro.sqlite"
+
+# Initialize bcrypt
+bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
@@ -201,3 +206,6 @@ if __name__ == "__main__":
     
     # Bind to all interfaces for public access
     app.run(debug=False, host='0.0.0.0', port=5000)
+
+# Vercel serverless handler - expose the Flask app
+# The app variable is already defined above and ready for Vercel

@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from flask_login import UserMixin
 
 class User(UserMixin):
@@ -14,6 +15,9 @@ def get_db_connection(db_path):
     return conn
 
 def init_db(db_path):
+    # Ensure /tmp directory exists (Vercel's writable directory)
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    
     conn = get_db_connection(db_path)
     
     # Simple table without email verification

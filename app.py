@@ -199,3 +199,5 @@ if __name__ == "__main__":
     print(f"Access from other devices using: http://{local_ip}:5000")
     print(f"Local access: http://127.0.0.1:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)
+# This line tells Vercel's server to use 'app' as the entry point
+app = app

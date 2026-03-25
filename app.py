@@ -45,7 +45,6 @@ def init_db(db_path):
             is_admin INTEGER DEFAULT 0
         )
     ''')
-    # Create default admin
     admin_exists = conn.execute("SELECT * FROM user WHERE email = ?", ('admin@forexpro.com',)).fetchone()
     if not admin_exists:
         pw_hash = bcrypt.generate_password_hash('admin123').decode('utf-8')
@@ -79,8 +78,8 @@ def create_user(db_path, email, password_hash):
     conn.close()
     return user_id
 
-def verify_password(stored_password, provided_password):
-    return bcrypt.check_password_hash(stored_password, provided_password)
+def verify_password(pw_hash, pw_plain):
+    return bcrypt.check_password_hash(pw_hash, pw_plain)
 
 # 3. Database Initialization (Global Scope)
 with app.app_context():
@@ -138,11 +137,14 @@ def login():
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         user = get_user_by_email(app.config["DATABASE"], email)
-        if not user or not verify_password(user.password, password):
+        
+        if user and verify_password(user.password, password):
+            login_user(user)
+            return redirect(url_for("dashboard"))
+        else:
             flash("Invalid email or password.", "danger")
             return redirect(url_for("login"))
-        login_user(user)
-        return redirect(url_for("dashboard"))
+            
     return render_template("login.html")
 
 @app.route("/dashboard")
@@ -150,11 +152,17 @@ def login():
 def dashboard():
     return render_template("dashboard.html", user=current_user)
 
-# --- AUTH FIX ---
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("Logged out successfully.", "info")
+    return redirect(url_for("login"))
+
+# --- AUTH FIX FOR HTML BUILDERROR ---
 
 @app.route("/auth/google")
 def google_auth():
-    # This solves the BuildError in login.html
     return redirect(url_for('google_callback'))
 
 @app.route("/auth/google/callback")

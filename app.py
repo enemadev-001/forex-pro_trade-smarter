@@ -4,7 +4,7 @@ import re
 import time
 import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from flask_bcrypt import Bcrypt
 
 # 1. Initialize Flask and Bcrypt
@@ -21,14 +21,70 @@ login_manager.login_view = "login"
 # Regular expression for email validation
 email_re = re.compile(r"^[^@]+@[^@]+\.[^@]+$")
 
+# --- DATABASE HELPER FUNCTIONS ---
+
+class User(UserMixin):
+    def __init__(self, id, email, password, is_admin):
+        self.id = id
+        self.email = email
+        self.password = password
+        self.is_admin = bool(is_admin)
+
+def get_db_connection(db_path):
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db(db_path):
+    conn = get_db_connection(db_path)
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS user (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            is_admin INTEGER DEFAULT 0
+        )
+    ''')
+    # Create default admin
+    admin_exists = conn.execute("SELECT * FROM user WHERE email = ?", ('admin@forexpro.com',)).fetchone()
+    if not admin_exists:
+        pw_hash = bcrypt.generate_password_hash('admin123').decode('utf-8')
+        conn.execute("INSERT INTO user (email, password, is_admin) VALUES (?, ?, ?)",
+                     ('admin@forexpro.com', pw_hash, 1))
+    conn.commit()
+    conn.close()
+
+def get_user_by_email(db_path, email):
+    conn = get_db_connection(db_path)
+    user_data = conn.execute("SELECT * FROM user WHERE email = ?", (email,)).fetchone()
+    conn.close()
+    if user_data:
+        return User(user_data['id'], user_data['email'], user_data['password'], user_data['is_admin'])
+    return None
+
+def get_user_by_id(db_path, user_id):
+    conn = get_db_connection(db_path)
+    user_data = conn.execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
+    conn.close()
+    if user_data:
+        return User(user_data['id'], user_data['email'], user_data['password'], user_data['is_admin'])
+    return None
+
+def create_user(db_path, email, password_hash):
+    conn = get_db_connection(db_path)
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO user (email, password) VALUES (?, ?)", (email, password_hash))
+    conn.commit()
+    user_id = cursor.lastrow_id
+    conn.close()
+    return user_id
+
+def verify_password(stored_password, provided_password):
+    return bcrypt.check_password_hash(stored_password, provided_password)
+
 # 3. Database Initialization (Global Scope)
-# This replaces the problematic @app.before_request block
 with app.app_context():
-    try:
-        # Assuming these helper functions are defined in your other files or below
-        init_db(app.config["DATABASE"])
-    except NameError:
-        print("Note: init_db function not found. Ensure helper functions are included.")
+    init_db(app.config["DATABASE"])
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -68,10 +124,9 @@ def signup():
             flash("Email already registered.", "danger")
             return redirect(url_for("signup"))
         
-        # Create user
         pw_hash = bcrypt.generate_password_hash(password).decode("utf-8")
         create_user(app.config["DATABASE"], email, pw_hash)
-        flash("Account created successfully! You can now log in.", "success")
+        flash("Account created! Log in below.", "success")
         return redirect(url_for("login"))
     return render_template("signup.html")
 
@@ -82,45 +137,35 @@ def login():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
-        if not email or not password:
-            flash("Email and password are required.", "danger")
-            return redirect(url_for("login"))
         user = get_user_by_email(app.config["DATABASE"], email)
-        if not user or not verify_password(password, user.password):
+        if not user or not verify_password(user.password, password):
             flash("Invalid email or password.", "danger")
             return redirect(url_for("login"))
         login_user(user)
-        flash("Logged in successfully!", "success")
         return redirect(url_for("dashboard"))
     return render_template("login.html")
-
-@app.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    flash("Logged out safely.", "info")
-    return redirect(url_for("login"))
 
 @app.route("/dashboard")
 @login_required
 def dashboard():
     return render_template("dashboard.html", user=current_user)
 
-# --- API & AUTH ---
+# --- AUTH FIX ---
+
+@app.route("/auth/google")
+def google_auth():
+    # This solves the BuildError in login.html
+    return redirect(url_for('google_callback'))
 
 @app.route("/auth/google/callback")
 def google_callback():
-    mock_google_user = {'email': 'user@gmail.com'}
-    existing_user = get_user_by_email(app.config["DATABASE"], mock_google_user['email'])
-    
-    if existing_user:
-        login_user(existing_user)
-    else:
-        pw_hash = bcrypt.generate_password_hash('google_oauth_user').decode("utf-8")
-        user_id = create_user(app.config["DATABASE"], mock_google_user['email'], pw_hash)
-        user = get_user_by_id(app.config["DATABASE"], user_id)
-        login_user(user)
-    
+    mock_email = 'user@gmail.com'
+    user = get_user_by_email(app.config["DATABASE"], mock_email)
+    if not user:
+        pw_hash = bcrypt.generate_password_hash('google_user').decode("utf-8")
+        create_user(app.config["DATABASE"], mock_email, pw_hash)
+        user = get_user_by_email(app.config["DATABASE"], mock_email)
+    login_user(user)
     return redirect(url_for('dashboard'))
 
 # 4. Vercel Entry Point

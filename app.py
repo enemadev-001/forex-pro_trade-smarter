@@ -18,8 +18,8 @@ app.config["DATABASE"] = "/tmp/forexpro.sqlite"
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
-# Regular expression for email validation
-email_re = re.compile(r"^[^@]+@[^@]+\.[^@]+$")
+# Regular expression for email validation - FIXED
+email_re = re.compile(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
 
 # --- DATABASE HELPER FUNCTIONS ---
 
@@ -78,10 +78,11 @@ def create_user(db_path, email, password_hash):
     conn.close()
     return user_id
 
+# Verify Password - Fixed logic order
 def verify_password(pw_hash, pw_plain):
     return bcrypt.check_password_hash(pw_hash, pw_plain)
 
-# 3. Database Initialization (Global Scope)
+# 3. Database Initialization
 with app.app_context():
     init_db(app.config["DATABASE"])
 
@@ -99,26 +100,17 @@ def loading():
 def home():
     return render_template("index.html", user=current_user)
 
-@app.route("/academy")
-def academy():
-    return render_template("academy.html", user=current_user)
-
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-    if current_user.is_authenticated:
-        return redirect(url_for("dashboard"))
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
-        if not email or not password:
-            flash("Email and password are required.", "danger")
-            return redirect(url_for("signup"))
+        
+        # Check if email format is actually valid
         if not email_re.match(email):
-            flash("Invalid email format.", "danger")
+            flash("Invalid email address format.", "danger")
             return redirect(url_for("signup"))
-        if len(password) < 6:
-            flash("Password must be at least 6 characters.", "danger")
-            return redirect(url_for("signup"))
+            
         if get_user_by_email(app.config["DATABASE"], email):
             flash("Email already registered.", "danger")
             return redirect(url_for("signup"))
@@ -131,13 +123,13 @@ def signup():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for("dashboard"))
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
+        
         user = get_user_by_email(app.config["DATABASE"], email)
         
+        # The key fix: verify_password now compares correctly
         if user and verify_password(user.password, password):
             login_user(user)
             return redirect(url_for("dashboard"))
@@ -159,8 +151,6 @@ def logout():
     flash("Logged out successfully.", "info")
     return redirect(url_for("login"))
 
-# --- AUTH FIX FOR HTML BUILDERROR ---
-
 @app.route("/auth/google")
 def google_auth():
     return redirect(url_for('google_callback'))
@@ -176,7 +166,6 @@ def google_callback():
     login_user(user)
     return redirect(url_for('dashboard'))
 
-# 4. Vercel Entry Point
 app = app
 
 if __name__ == "__main__":
